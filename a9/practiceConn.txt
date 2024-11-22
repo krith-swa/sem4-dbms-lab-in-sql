@@ -1,0 +1,119 @@
+import javax.swing.*;
+import java.sql.*;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+Connection con;
+Statement st;
+PreparedStatement ps;
+ResultSet rs;
+
+try {
+	Class.forName("oracle.jdbc.OracleDriver");
+	JOptionPane.showMessageDialog(this,"Driver loaded!");
+
+	try {
+		con = DriverManager.getConnection("jdbc:oracle:thin:@10.6.4.33.1521:orcl","1057","1057");
+		JOptionPane.showMessageDialog(this,"Connected to database!");
+		}
+	catch (SQLException ex){
+		Logger.getLogger(JDBC.class.getName()).log(Level.SEVERE,null,ex);
+		JOptionPane.showMessageDialog(this,ex.getMessage());
+		}
+	}
+catch (ClassNotFoundException ex){
+	Logger.getLogger(JDBC.class.getName()).log(Level.SEVERE,null,ex);
+	JOptionPane.showMessageDialog(this,ex.getMessage());
+	}
+
+private void cleartext() {
+	var1.setText("");
+	var2.setText("");
+	}
+
+//insert
+try {
+	String sql = "insert into table_name values (?,?,null,null)";
+	ps = con.prepareStatement(sql);
+	ps.setString(1,var1.getText());
+	ps.setString(2.var1.getText());
+	ps.execute();
+	JOptionPane.showMessageDialog(this,"Inserted!");
+	cleartext();
+	}
+catch (SQLException ex){
+		Logger.getLogger(JDBC.class.getName()).log(Level.SEVERE,null,ex);
+		JOptionPane.showMessageDialog(this,ex.getMessage());
+		}
+
+//delete
+try {
+	String sql = "delete from table_name where var1 = ?";
+	ps = con.prepareStatement(sql);
+	ps.setString(1,var1.getText());
+	ps.execute();
+	JOptionPane.showMessageDialog(this,"Deleted!");
+	cleartext();
+	}
+catch (SQLException ex){
+		Logger.getLogger(JDBC.class.getName()).log(Level.SEVERE,null,ex);
+		JOptionPane.showMessageDialog(this,ex.getMessage());
+		}
+
+//update
+try {
+	String sql = "update table_name set var2=? where var1=?";
+	ps = con.prepareStatement(sql);
+	ps.setString(2,var1.getText());
+	ps.setString(1,var2.getText());
+	ps.execute();
+	JOptionPane.showMessageDialog(this,"Updated!");
+	cleartext();
+	}
+catch (SQLException ex){
+		Logger.getLogger(JDBC.class.getName()).log(Level.SEVERE,null,ex);
+		JOptionPane.showMessageDialog(this,ex.getMessage());
+		}
+
+//search
+try {
+	String sql = "select * from table_name where var1 = '"+var1.getText()+"'";
+	st = con.createStatement(rs.TYPE_SCROLL_SENSITIVE,rs.CONCUR_UPDATABLE);
+	rs = st.executeQuery(sql);
+	if (rs.next()) {
+		var1.setText(rs.getString(1));
+		var2.setText(rs.getString(2));
+		JOptionPane.showMessageDialog(this,"Record found!");
+		}
+	else {
+		JOptionPane.showMessageDialog(this,"Record not found!");
+		}
+	cleartext();
+	}
+catch (SQLException ex){
+		Logger.getLogger(JDBC.class.getName()).log(Level.SEVERE,null,ex);
+		JOptionPane.showMessageDialog(this,ex.getMessage());
+		}
+
+//some procedure or function
+try {
+	CallableStatement cs = con.prepareCall("{call func_name(?)}");
+	cs.setString(1,var1.getText());
+	cs.execute();
+	String sql = "select reqd_value from table_name where var1 = '"+var1.getText()+"'";
+	st = con.createStatement(rs.TYPE_SCROLL_SENSITIVE,rs.CONCUR_UPDATABLE);
+	rs = st.executeQuery(sql);
+	if (rs.next()) {
+		var3.setText(rs.getString(1));
+		JOptionPane.showMessageDialog(this,"Operation successfully performed!");
+		}
+	else {
+		JOptionPane.showMessageDialog(this,"Operation unsuccessful!");
+		}
+	cleartext();
+	}
+catch (SQLException ex){
+		Logger.getLogger(JDBC.class.getName()).log(Level.SEVERE,null,ex);
+		JOptionPane.showMessageDialog(this,ex.getMessage());
+		}
